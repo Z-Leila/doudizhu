@@ -1,0 +1,196 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+	<title>打牌</title>
+</head>
+<style>
+	ul li{
+		margin:0;
+		padding:0;
+		list-style: none;
+	}
+	.center{
+		position: absolute;
+		margin: auto;
+		left:0;
+		right:0;
+	}
+	.zhuozi{
+		position: absolute;
+		width: 600px;
+		height:400px;
+		top:-402px;
+		border:1px solid black;
+		background:green;
+	}
+	.left{
+		position:absolute;
+		left:50%;
+		top:40px;
+		margin-left:-520px;
+		width:200px;
+		height:600px;
+		border:1px solid black;
+		background:green;
+	}
+	.right{
+		position:absolute;
+		left:50%;
+		top:40px;
+		margin-left:320px;
+		width: 200px;
+		height:600px;
+		border:1px solid black;
+		background:green;
+	}
+	.zhong{
+		position:absolute;
+		top:489px;
+		width: 600px;
+		height:150px;
+		border:1px solid black;
+		background:green;
+	}
+	.zhuozi .pai{
+		position: absolute;
+		border:1px solid black;
+		width: 150px;
+		height:250px;
+		margin:auto;
+		left:0;
+		top:0;
+		bottom:0;
+		right:0;
+		opacity: 0;
+		font-size: 30px;
+		border-radius: 10px;
+	}
+
+	.left .pai ,.right .pai{
+		width: 48%;
+		height: 36px;
+		box-sizing:border-box;
+		margin-right:2px; 
+		margin-top:20px; 
+		margin-bottom: 2px;
+		border: 1px solid black;
+		float: left;
+	}
+	.zhong .pai{
+		border: 1px solid black;
+		margin-left: 2px;
+		margin-top: 5px;
+		width: 36px;
+		height: 45%; 
+		float:left;
+	}
+	.heitao{
+		background: #24242f;
+
+	}
+	.meihua{
+		background: #0d3721;
+
+	}
+	.hongtao{
+		background: #eb3016;
+
+	}
+	.fangkuai{
+		background: #ffbb00;
+	}
+</style>
+<body>
+	<div class="zhuozi center">
+	</div>
+	<ul>
+		<li class="left"></li>
+		<li class="zhong center"></li>
+		<li class="right"></li>
+	</ul>
+	<script src="./jquery-1.12.0.js"></script>
+	<script>
+	$(function(){
+	var porkers=[];
+	var zhuozi=$('.zhuozi');
+	var left=$('.left');
+	var zhong=$('.zhong');
+	var right=$('.right');
+	var num2porker={1:'A',2:'2',3:'3',4:'4',5:'5',6:'6',7:'7',8:'8',9:'9',10:'10',11:'J',12:'Q',13:'K'};
+
+	//生成牌
+	var generatePorker = function(){
+		var dict = {};
+		var r=[];
+		var colors=['hongtao','heitao','meihua','fangkuai'];    	
+	      while(r.length !== 52){
+	      	var h = colors[Math.floor(Math.random()*4)];
+      	    var s = Math.floor(Math.random()*13)+1;
+      	    var pai = {huase:h,shuzi:s};
+	      	if(!dict[h + s]){
+	      		dict[h + s]=true;
+	      		r.push(pai);
+	      	}	      	
+	      }
+	      return r;	
+	}
+	porkers = generatePorker();
+
+   //放牌
+    var fangpai = function(){
+		$(porkers).each(function(i,v){
+			$('<div>')
+			.addClass('pai '+v.huase)
+			.text(num2porker[v.shuzi])
+			.appendTo(zhuozi)
+			.delay(30*i)
+			.animate({opacity:1},800)
+			.queue(function(){
+				if(i === porkers.length - 1){
+					$(document).on('dblclick',fapai)
+				}
+				$(this).dequeue();
+			});
+		})		
+	}
+
+	zhuozi.animate({top:40},400,fangpai);
+
+	
+
+	//发牌
+	var fapai = function(){
+		zhuozi.children().each(function(i,v){
+			var target,off;
+			if(i%3  ===  0){
+				target=left;
+				off = ({left:'-=300',opacity:0})
+			}else if(i%3 === 1){
+				target=zhong;
+				off = ({top:'+=200',opacity:0})
+			}else if(i%3 === 2){
+				target=right;
+				off = ({left:'+=300',opacity:0})
+			}
+			$(this)
+			.delay(30*i)
+			.animate(off,400)
+			.queue(function(){
+				$(this)
+				.appendTo(target)
+				.css({opacity:1})
+				.dequeue()
+			})
+			
+		});
+	}
+
+
+})
+
+
+
+	</script>
+</body>
+</html>
